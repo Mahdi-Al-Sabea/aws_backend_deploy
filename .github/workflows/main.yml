@@ -1,6 +1,6 @@
+
 # Name of the workflow visible in the GitHub Actions tab
 name: Deploy Backend to Elastic Beanstalk
-
 # 1. Trigger: Define when this workflow should run
 on:
   push:
@@ -10,6 +10,7 @@ on:
 # 2. Jobs: Define the tasks (build, deploy)
 jobs:
   deploy:
+    environment: aws environment
     runs-on: ubuntu-latest # GitHub-hosted runner environment
 
     # 3. Steps: A sequence of tasks to execute
