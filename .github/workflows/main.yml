@@ -26,24 +26,18 @@ jobs:
       # Create a ZIP file of the application code for deployment
       - name: Generate deployment package
         run: zip -r deploy.zip . -x "*.git*" # Zip everything, excluding git artifacts
-        
-      # Configure AWS credentials for the runner
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          # Use secrets for security (Setup instructions below)
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: me-south-1 # ⚠️ CHANGE THIS to your AWS region (e.g., eu-central-1)
 
-      # 4. Deploy: Use the beanstalk-deploy action
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v22 # A popular, reliable action
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v22
         with:
-          application_name: backendTestMain # ⚠️ CHANGE THIS
-          environment_name: BackendTestMain-env # ⚠️ CHANGE THIS
-          version_label: deploy-${{ github.sha }} # Creates a unique version based on the commit hash
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: backendTestMain
+          environment_name: BackendTestMain-env
+          version_label: deploy-${{ github.sha }}
+          region: me-south-1
           deployment_package: deploy.zip
+        
           
           # Optional: Wait for the EB environment to become healthy
           wait_for_deployment: true
