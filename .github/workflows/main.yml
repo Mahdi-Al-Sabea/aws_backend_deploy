@@ -1,0 +1,49 @@
+# Name of the workflow visible in the GitHub Actions tab
+name: Deploy Backend to Elastic Beanstalk
+
+# 1. Trigger: Define when this workflow should run
+on:
+  push:
+    branches:
+      - main # Change to 'master' or your desired branch
+
+# 2. Jobs: Define the tasks (build, deploy)
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # GitHub-hosted runner environment
+
+    # 3. Steps: A sequence of tasks to execute
+    steps:
+      # Standard step to check out your repository code
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # (Optional) If your Node.js app needs dependencies installed before zipping
+      - name: Install Dependencies
+        run: npm install 
+
+      # Create a ZIP file of the application code for deployment
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x "*.git*" # Zip everything, excluding git artifacts
+        
+      # Configure AWS credentials for the runner
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Use secrets for security (Setup instructions below)
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # ⚠️ CHANGE THIS to your AWS region (e.g., eu-central-1)
+
+      # 4. Deploy: Use the beanstalk-deploy action
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22 # A popular, reliable action
+        with:
+          application_name: backendTestMain # ⚠️ CHANGE THIS
+          environment_name: BackendTestMain-env # ⚠️ CHANGE THIS
+          version_label: deploy-${{ github.sha }} # Creates a unique version based on the commit hash
+          deployment_package: deploy.zip
+          
+          # Optional: Wait for the EB environment to become healthy
+          wait_for_deployment: true
+          wait_for_environment_recovery: 60
