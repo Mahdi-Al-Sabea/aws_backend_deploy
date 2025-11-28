@@ -18,7 +18,7 @@ let nextId = 3;
 // Health check
 
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok gaayyyyyyyy', timestamp: new Date().toISOString() });
 });
 
 app.get('/health', (req, res) => {
