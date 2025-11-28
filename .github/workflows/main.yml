@@ -34,7 +34,7 @@ jobs:
           # Use secrets for security (Setup instructions below)
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # ⚠️ CHANGE THIS to your AWS region (e.g., eu-central-1)
+          aws-region: me-south-1 # ⚠️ CHANGE THIS to your AWS region (e.g., eu-central-1)
 
       # 4. Deploy: Use the beanstalk-deploy action
       - name: Deploy to Elastic Beanstalk
